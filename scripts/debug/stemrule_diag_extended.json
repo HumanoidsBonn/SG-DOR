@@ -1,0 +1,583 @@
+{
+  "config": {
+    "seed": 0,
+    "train": {
+      "k": 8
+    },
+    "node_classes": [
+      "stem",
+      "leaf",
+      "fruit",
+      "peduncle"
+    ],
+    "edge_labels": [
+      "attached_to",
+      "diversion"
+    ],
+    "features": {
+      "use_centroid": true,
+      "use_axes": true,
+      "use_extents": true,
+      "use_orientation": true,
+      "use_color": true
+    },
+    "noise": {
+      "centroid_std": 0.025,
+      "orientation_std": 0.08,
+      "axis_std": 0.05,
+      "extent_std": 0.005,
+      "color_hue_std": 0.05,
+      "color_sat_std": 0.1,
+      "color_val_std": 0.15,
+      "shadow_shift_range": [
+        -0.1,
+        0.1
+      ]
+    },
+    "rot_aug": {
+      "apply_rot": false,
+      "yaw_deg": [
+        0.0,
+        360.0
+      ],
+      "pitch_deg": [
+        -3.0,
+        3.0
+      ],
+      "roll_deg": [
+        -3.0,
+        3.0
+      ]
+    },
+    "stem_knn": {
+      "extra_stems_per_node": 2
+    },
+    "edge_candidates": {
+      "type_constraint": {
+        "enabled": true,
+        "allowed_pairs": [
+          [
+            "leaf",
+            "stem"
+          ],
+          [
+            "peduncle",
+            "stem"
+          ],
+          [
+            "fruit",
+            "peduncle"
+          ]
+        ]
+      }
+    },
+    "drop_aug": {
+      "apply_drop": false,
+      "node_drop_prob": 0.08,
+      "edge_drop_prob": 0.15,
+      "protect_stems": true
+    },
+    "edge_baseline": {
+      "enabled": true,
+      "max_samples": 1000,
+      "test_split": 0.2,
+      "features": {
+        "delta_xyz": true,
+        "dist": true,
+        "dist_xy": true,
+        "abs_dz": true,
+        "extents_log_ratio": true,
+        "orientation_cos": true,
+        "color_delta": true
+      }
+    },
+    "diagnostics": {
+      "apply_center": true
+    }
+  },
+  "dataset_path": "scenes/occlusionData_20260109_1946/scene_graphs.json",
+  "num_scenes": 1000,
+  "summary_descriptions": {
+    "base_candidate_count": "Undirected unique candidate edges from plain kNN (no stem augmentation).",
+    "stem_candidate_count": "Undirected unique candidate edges after adding extra stem edges.",
+    "base_candidate_count_type": "Candidates after type-constraint filter (kNN only).",
+    "stem_candidate_count_type": "Candidates after type-constraint filter (with stem rule).",
+    "added_directed_edges": "Directed edges added by stem rule (before undirected collapse).",
+    "added_undirected_pairs": "Undirected unique pairs added by stem rule.",
+    "type_filter_drop_rate": "Fraction of stem-rule candidates removed by type filtering.",
+    "base_hit_rate": "GT edge coverage within kNN candidates (no stem rule).",
+    "stem_hit_rate": "GT edge coverage within candidates after stem rule.",
+    "base_hit_rate_type": "GT edge coverage within type-filtered kNN candidates.",
+    "stem_hit_rate_type": "GT edge coverage within type-filtered candidates after stem rule.",
+    "base_pos_rate": "Positives / candidates for kNN only (pre type-filter).",
+    "stem_pos_rate": "Positives / candidates after stem rule (pre type-filter).",
+    "base_pos_rate_type": "Positives / candidates after type filter (kNN only).",
+    "stem_pos_rate_type": "Positives / candidates after type filter (with stem rule).",
+    "stem_extra_precision": "Precision of extra stem-rule edges (post type-filter).",
+    "stem_extra_recall": "Recall contribution of extra stem-rule edges (post type-filter).",
+    "stem_extra_count": "Number of extra stem-rule edges (post type-filter).",
+    "stem_extra_true": "Number of GT edges among extra stem-rule edges.",
+    "stem_extra_dist_all": "Distances for extra stem-rule edges (all).",
+    "stem_extra_dist_true": "Distances for extra stem-rule edges that are GT positives.",
+    "stem_extra_dist_false": "Distances for extra stem-rule edges that are negatives.",
+    "stem_degree_mean": "Mean degree of stem nodes in type-filtered candidate graph.",
+    "nonstem_degree_mean": "Mean degree of non-stem nodes in type-filtered candidate graph.",
+    "edge_baseline": "Logistic regression baseline on candidate edges using simple, robot-available features.",
+    "per_type_candidate_stats": "Per-type candidate counts and positive rates for base/stem, pre/post type filter."
+  },
+  "summary": {
+    "base_candidate_count": {
+      "mean": 3735.791015625,
+      "median": 3753.5,
+      "min": 2473.0,
+      "max": 5178.0
+    },
+    "stem_candidate_count": {
+      "mean": 5170.57421875,
+      "median": 5195.5,
+      "min": 3424.0,
+      "max": 7189.0
+    },
+    "base_candidate_count_type": {
+      "mean": 79.16000366210938,
+      "median": 79.0,
+      "min": 40.0,
+      "max": 131.0
+    },
+    "stem_candidate_count_type": {
+      "mean": 1455.81298828125,
+      "median": 1461.0,
+      "min": 967.0,
+      "max": 2029.0
+    },
+    "added_directed_edges": {
+      "mean": 2886.760009765625,
+      "median": 2895.0,
+      "min": 1911.0,
+      "max": 4048.0
+    },
+    "added_undirected_pairs": {
+      "mean": 1434.782958984375,
+      "median": 1441.5,
+      "min": 951.0,
+      "max": 2011.0
+    },
+    "type_filter_drop_rate": {
+      "mean": 0.7185354232788086,
+      "median": 0.7184571027755737,
+      "min": 0.7130771279335022,
+      "max": 0.7260273694992065
+    },
+    "base_hit_rate": {
+      "mean": 0.06767698377370834,
+      "median": 0.06738066673278809,
+      "min": 0.04197080433368683,
+      "max": 0.11334551870822906
+    },
+    "stem_hit_rate": {
+      "mean": 0.9381428360939026,
+      "median": 0.9434784054756165,
+      "min": 0.804809033870697,
+      "max": 0.9934425950050354
+    },
+    "base_hit_rate_type": {
+      "mean": 0.06767698377370834,
+      "median": 0.06738066673278809,
+      "min": 0.04197080433368683,
+      "max": 0.11334551870822906
+    },
+    "stem_hit_rate_type": {
+      "mean": 0.9381428360939026,
+      "median": 0.9434784054756165,
+      "min": 0.804809033870697,
+      "max": 0.9934425950050354
+    },
+    "base_pos_rate": {
+      "mean": 0.013382303528487682,
+      "median": 0.01332998089492321,
+      "min": 0.008275405503809452,
+      "max": 0.022431259974837303
+    },
+    "stem_pos_rate": {
+      "mean": 0.13406652212142944,
+      "median": 0.13473519682884216,
+      "min": 0.11525217443704605,
+      "max": 0.14245416224002838
+    },
+    "base_pos_rate_type": {
+      "mean": 0.6323520541191101,
+      "median": 0.6301369667053223,
+      "min": 0.46268656849861145,
+      "max": 0.8571428656578064
+    },
+    "stem_pos_rate_type": {
+      "mean": 0.47630932927131653,
+      "median": 0.47891873121261597,
+      "min": 0.40935251116752625,
+      "max": 0.5030891299247742
+    },
+    "stem_extra_precision": {
+      "mean": 0.4674721956253052,
+      "median": 0.4702175557613373,
+      "min": 0.4010573923587799,
+      "max": 0.49511978030204773
+    },
+    "stem_extra_recall": {
+      "mean": 0.8704658150672913,
+      "median": 0.8747074007987976,
+      "min": 0.7496423721313477,
+      "max": 0.9300000071525574
+    },
+    "stem_extra_count": {
+      "mean": 1376.6529541015625,
+      "median": 1379.0,
+      "min": 903.0,
+      "max": 1939.0
+    },
+    "stem_extra_true": {
+      "mean": 642.3489990234375,
+      "median": 642.0,
+      "min": 380.0,
+      "max": 940.0
+    },
+    "stem_extra_dist_all": {
+      "mean": 0.6286051273345947,
+      "median": 0.6218664646148682,
+      "min": 0.049821171909570694,
+      "max": 1.4329783916473389
+    },
+    "stem_extra_dist_true": {
+      "mean": 0.6293114423751831,
+      "median": 0.6224439740180969,
+      "min": 0.05210770294070244,
+      "max": 1.4329783916473389
+    },
+    "stem_extra_dist_false": {
+      "mean": 0.6279871463775635,
+      "median": 0.6213155388832092,
+      "min": 0.049821171909570694,
+      "max": 1.4220621585845947
+    },
+    "stem_degree_mean": {
+      "mean": 357.0387268066406,
+      "median": 357.0,
+      "min": 310.0,
+      "max": 419.5
+    },
+    "nonstem_degree_mean": {
+      "mean": 2.021374464035034,
+      "median": 2.0190577507019043,
+      "min": 1.9739776849746704,
+      "max": 2.1115760803222656
+    }
+  },
+  "per_type_hit_rates": {
+    "leaf -- stem": {
+      "count": 678497,
+      "base_hit_rate": 0.03615786068324547,
+      "stem_hit_rate": 0.9415914882453423
+    },
+    "fruit -- peduncle": {
+      "count": 30349,
+      "base_hit_rate": 0.7562028402912782,
+      "stem_hit_rate": 0.7562028402912782
+    },
+    "peduncle -- stem": {
+      "count": 30349,
+      "base_hit_rate": 0.07314903291706482,
+      "stem_hit_rate": 0.9962436983096642
+    }
+  },
+  "per_type_candidate_stats": {
+    "fruit -- fruit": {
+      "base_pre_count": 7143,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 7143,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "fruit -- leaf": {
+      "base_pre_count": 264762,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 264762,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "fruit -- peduncle": {
+      "base_pre_count": 38063,
+      "base_pre_pos_rate": 0.6029477445288075,
+      "stem_pre_count": 38063,
+      "stem_pre_pos_rate": 0.6029477445288075,
+      "base_post_count": 38063,
+      "base_post_pos_rate": 0.6029477445288075,
+      "stem_post_count": 38063,
+      "stem_post_pos_rate": 0.6029477445288075,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "fruit -- stem": {
+      "base_pre_count": 2572,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 60702,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "leaf -- leaf": {
+      "base_pre_count": 3106500,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 3106500,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "leaf -- peduncle": {
+      "base_pre_count": 267390,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 267390,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "leaf -- stem": {
+      "base_pre_count": 38379,
+      "base_pre_pos_rate": 0.6392297871231664,
+      "stem_pre_count": 1357046,
+      "stem_pre_pos_rate": 0.47077770392455376,
+      "base_post_count": 38379,
+      "base_post_pos_rate": 0.6392297871231664,
+      "stem_post_count": 1357046,
+      "stem_post_pos_rate": 0.47077770392455376,
+      "stem_extra_count": 1318667,
+      "stem_extra_precision": 0.46587500862613535
+    },
+    "peduncle -- peduncle": {
+      "base_pre_count": 7863,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 7863,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    },
+    "peduncle -- stem": {
+      "base_pre_count": 2718,
+      "base_pre_pos_rate": 0.8167770419426048,
+      "stem_pre_count": 60704,
+      "stem_pre_pos_rate": 0.49807261465471797,
+      "base_post_count": 2718,
+      "base_post_pos_rate": 0.8167770419426048,
+      "stem_post_count": 60704,
+      "stem_post_pos_rate": 0.49807261465471797,
+      "stem_extra_count": 57986,
+      "stem_extra_precision": 0.4831338598972166
+    },
+    "stem -- stem": {
+      "base_pre_count": 401,
+      "base_pre_pos_rate": 0.0,
+      "stem_pre_count": 401,
+      "stem_pre_pos_rate": 0.0,
+      "base_post_count": 0,
+      "base_post_pos_rate": NaN,
+      "stem_post_count": 0,
+      "stem_post_pos_rate": NaN,
+      "stem_extra_count": 0,
+      "stem_extra_precision": NaN
+    }
+  },
+  "edge_baseline": {
+    "pre_type": {
+      "num_samples": 1000,
+      "num_seen_total": 5170574,
+      "pos_rate": 0.122,
+      "logreg": {
+        "auc": 0.8927556818181818,
+        "precision": 0.5,
+        "recall": 0.2916666666666667,
+        "f1": 0.3684210526315789,
+        "best_f1": 0.5797101449275363,
+        "best_thresh": 0.3
+      },
+      "feature_stats": {
+        "pos_mean": [
+          -0.0029022214002907276,
+          0.02133103646337986,
+          0.5685332417488098,
+          0.6015118956565857,
+          0.08636901527643204,
+          0.5839800238609314,
+          4.290306568145752,
+          0.8986961245536804,
+          2.144054651260376,
+          -0.009698551148176193,
+          0.2643841803073883,
+          0.17020706832408905,
+          0.27306604385375977
+        ],
+        "neg_mean": [
+          -0.005334773566573858,
+          0.0024598913732916117,
+          0.0997474193572998,
+          0.16392920911312103,
+          0.06670057028532028,
+          0.1299351453781128,
+          0.9691522717475891,
+          0.3720797300338745,
+          0.6229937672615051,
+          0.01985381916165352,
+          0.04801845923066139,
+          0.02838451974093914,
+          0.04674869403243065
+        ],
+        "pos_std": [
+          0.06544706225395203,
+          0.07083745300769806,
+          0.4145769476890564,
+          0.3782223165035248,
+          0.04801136627793312,
+          0.3925192356109619,
+          1.19938063621521,
+          0.922825038433075,
+          1.6190918684005737,
+          0.4863426387310028,
+          0.25746017694473267,
+          0.3056877851486206,
+          0.25738024711608887
+        ],
+        "neg_std": [
+          0.061347395181655884,
+          0.051624804735183716,
+          0.2754147946834564,
+          0.25572100281715393,
+          0.044879473745822906,
+          0.26252564787864685,
+          1.9852604866027832,
+          1.4918657541275024,
+          2.2205212116241455,
+          0.6810204982757568,
+          0.28050875663757324,
+          0.26916852593421936,
+          0.280124306678772
+        ]
+      },
+      "feature_names": [
+        "delta_xyz",
+        "dist",
+        "dist_xy",
+        "abs_dz",
+        "extents_log_ratio",
+        "orientation_cos",
+        "color_delta"
+      ]
+    },
+    "post_type": {
+      "num_samples": 1000,
+      "num_seen_total": 1455813,
+      "pos_rate": 0.479,
+      "logreg": {
+        "auc": 0.6502403846153846,
+        "precision": 0.5757575757575758,
+        "recall": 0.59375,
+        "f1": 0.5846153846153846,
+        "best_f1": 0.6550522648083623,
+        "best_thresh": 0.15
+      },
+      "feature_stats": {
+        "pos_mean": [
+          -0.007598320487886667,
+          0.017793023958802223,
+          0.5515620708465576,
+          0.5807456970214844,
+          0.08337056636810303,
+          0.5652667880058289,
+          4.376770973205566,
+          1.0871809720993042,
+          2.409477949142456,
+          -0.009464449249207973,
+          0.2521483898162842,
+          0.16433945298194885,
+          0.2681243121623993
+        ],
+        "neg_mean": [
+          0.00522793922573328,
+          0.011989046819508076,
+          0.558027982711792,
+          0.6000074148178101,
+          0.1200542151927948,
+          0.5740429162979126,
+          4.379526615142822,
+          1.0734723806381226,
+          2.351473569869995,
+          -0.05298974737524986,
+          0.2518581748008728,
+          0.18888753652572632,
+          0.27135100960731506
+        ],
+        "pos_std": [
+          0.06007811799645424,
+          0.07176724821329117,
+          0.38142579793930054,
+          0.3486762046813965,
+          0.04672899842262268,
+          0.36080431938171387,
+          1.1575899124145508,
+          1.2276079654693604,
+          1.685497760772705,
+          0.47443264722824097,
+          0.23160088062286377,
+          0.26524242758750916,
+          0.23975296318531036
+        ],
+        "neg_std": [
+          0.1119207888841629,
+          0.07260024547576904,
+          0.3921605348587036,
+          0.35091927647590637,
+          0.05962467938661575,
+          0.36832043528556824,
+          1.2279775142669678,
+          1.1200542449951172,
+          1.613699197769165,
+          0.4804267883300781,
+          0.23069119453430176,
+          0.2518411874771118,
+          0.23168516159057617
+        ]
+      },
+      "feature_names": [
+        "delta_xyz",
+        "dist",
+        "dist_xy",
+        "abs_dz",
+        "extents_log_ratio",
+        "orientation_cos",
+        "color_delta"
+      ]
+    }
+  }
+}

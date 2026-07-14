@@ -1,0 +1,275 @@
+{
+  "config": {
+    "seed": 0,
+    "train": {
+      "k": 8
+    },
+    "node_classes": [
+      "stem",
+      "leaf",
+      "fruit",
+      "peduncle"
+    ],
+    "edge_labels": [
+      "attached_to",
+      "diversion"
+    ],
+    "features": {
+      "use_centroid": true,
+      "use_axes": true,
+      "use_extents": true,
+      "use_orientation": true,
+      "use_color": true
+    },
+    "noise": {
+      "centroid_std": 0.025,
+      "orientation_std": 0.08,
+      "axis_std": 0.05,
+      "extent_std": 0.005,
+      "color_hue_std": 0.05,
+      "color_sat_std": 0.1,
+      "color_val_std": 0.15,
+      "shadow_shift_range": [
+        -0.1,
+        0.1
+      ]
+    },
+    "rot_aug": {
+      "apply_rot": false,
+      "yaw_deg": [
+        0.0,
+        360.0
+      ],
+      "pitch_deg": [
+        -3.0,
+        3.0
+      ],
+      "roll_deg": [
+        -3.0,
+        3.0
+      ]
+    },
+    "stem_knn": {
+      "extra_stems_per_node": 2
+    },
+    "edge_candidates": {
+      "type_constraint": {
+        "enabled": true,
+        "allowed_pairs": [
+          [
+            "leaf",
+            "stem"
+          ],
+          [
+            "peduncle",
+            "stem"
+          ],
+          [
+            "fruit",
+            "peduncle"
+          ]
+        ]
+      }
+    },
+    "drop_aug": {
+      "apply_drop": false,
+      "node_drop_prob": 0.08,
+      "edge_drop_prob": 0.15,
+      "protect_stems": true
+    },
+    "diagnostics": {
+      "apply_center": true
+    }
+  },
+  "dataset_path": "scenes/occlusionData_20260109_1946/scene_graphs.json",
+  "num_scenes": 1000,
+  "summary_descriptions": {
+    "base_candidate_count": "Undirected unique candidate edges from plain kNN (no stem augmentation).",
+    "stem_candidate_count": "Undirected unique candidate edges after adding extra stem edges.",
+    "base_candidate_count_type": "Candidates after type-constraint filter (kNN only).",
+    "stem_candidate_count_type": "Candidates after type-constraint filter (with stem rule).",
+    "added_directed_edges": "Directed edges added by stem rule (before undirected collapse).",
+    "added_undirected_pairs": "Undirected unique pairs added by stem rule.",
+    "type_filter_drop_rate": "Fraction of stem-rule candidates removed by type filtering.",
+    "base_hit_rate": "GT edge coverage within kNN candidates (no stem rule).",
+    "stem_hit_rate": "GT edge coverage within candidates after stem rule.",
+    "base_hit_rate_type": "GT edge coverage within type-filtered kNN candidates.",
+    "stem_hit_rate_type": "GT edge coverage within type-filtered candidates after stem rule.",
+    "base_pos_rate": "Positives / candidates for kNN only (pre type-filter).",
+    "stem_pos_rate": "Positives / candidates after stem rule (pre type-filter).",
+    "base_pos_rate_type": "Positives / candidates after type filter (kNN only).",
+    "stem_pos_rate_type": "Positives / candidates after type filter (with stem rule).",
+    "stem_extra_precision": "Precision of extra stem-rule edges (post type-filter).",
+    "stem_extra_recall": "Recall contribution of extra stem-rule edges (post type-filter).",
+    "stem_extra_count": "Number of extra stem-rule edges (post type-filter).",
+    "stem_extra_true": "Number of GT edges among extra stem-rule edges.",
+    "stem_extra_dist_all": "Distances for extra stem-rule edges (all).",
+    "stem_extra_dist_true": "Distances for extra stem-rule edges that are GT positives.",
+    "stem_extra_dist_false": "Distances for extra stem-rule edges that are negatives.",
+    "stem_degree_mean": "Mean degree of stem nodes in type-filtered candidate graph.",
+    "nonstem_degree_mean": "Mean degree of non-stem nodes in type-filtered candidate graph."
+  },
+  "summary": {
+    "base_candidate_count": {
+      "mean": 3735.791015625,
+      "median": 3753.5,
+      "min": 2473.0,
+      "max": 5178.0
+    },
+    "stem_candidate_count": {
+      "mean": 5170.57421875,
+      "median": 5195.5,
+      "min": 3424.0,
+      "max": 7189.0
+    },
+    "base_candidate_count_type": {
+      "mean": 79.16000366210938,
+      "median": 79.0,
+      "min": 40.0,
+      "max": 131.0
+    },
+    "stem_candidate_count_type": {
+      "mean": 1455.81298828125,
+      "median": 1461.0,
+      "min": 967.0,
+      "max": 2029.0
+    },
+    "added_directed_edges": {
+      "mean": 2886.760009765625,
+      "median": 2895.0,
+      "min": 1911.0,
+      "max": 4048.0
+    },
+    "added_undirected_pairs": {
+      "mean": 1434.782958984375,
+      "median": 1441.5,
+      "min": 951.0,
+      "max": 2011.0
+    },
+    "type_filter_drop_rate": {
+      "mean": 0.7185354232788086,
+      "median": 0.7184571027755737,
+      "min": 0.7130771279335022,
+      "max": 0.7260273694992065
+    },
+    "base_hit_rate": {
+      "mean": 0.06767698377370834,
+      "median": 0.06738066673278809,
+      "min": 0.04197080433368683,
+      "max": 0.11334551870822906
+    },
+    "stem_hit_rate": {
+      "mean": 0.9381428360939026,
+      "median": 0.9434784054756165,
+      "min": 0.804809033870697,
+      "max": 0.9934425950050354
+    },
+    "base_hit_rate_type": {
+      "mean": 0.06767698377370834,
+      "median": 0.06738066673278809,
+      "min": 0.04197080433368683,
+      "max": 0.11334551870822906
+    },
+    "stem_hit_rate_type": {
+      "mean": 0.9381428360939026,
+      "median": 0.9434784054756165,
+      "min": 0.804809033870697,
+      "max": 0.9934425950050354
+    },
+    "base_pos_rate": {
+      "mean": 0.013382303528487682,
+      "median": 0.01332998089492321,
+      "min": 0.008275405503809452,
+      "max": 0.022431259974837303
+    },
+    "stem_pos_rate": {
+      "mean": 0.13406652212142944,
+      "median": 0.13473519682884216,
+      "min": 0.11525217443704605,
+      "max": 0.14245416224002838
+    },
+    "base_pos_rate_type": {
+      "mean": 0.6323520541191101,
+      "median": 0.6301369667053223,
+      "min": 0.46268656849861145,
+      "max": 0.8571428656578064
+    },
+    "stem_pos_rate_type": {
+      "mean": 0.47630932927131653,
+      "median": 0.47891873121261597,
+      "min": 0.40935251116752625,
+      "max": 0.5030891299247742
+    },
+    "stem_extra_precision": {
+      "mean": 0.4674721956253052,
+      "median": 0.4702175557613373,
+      "min": 0.4010573923587799,
+      "max": 0.49511978030204773
+    },
+    "stem_extra_recall": {
+      "mean": 0.8704658150672913,
+      "median": 0.8747074007987976,
+      "min": 0.7496423721313477,
+      "max": 0.9300000071525574
+    },
+    "stem_extra_count": {
+      "mean": 1376.6529541015625,
+      "median": 1379.0,
+      "min": 903.0,
+      "max": 1939.0
+    },
+    "stem_extra_true": {
+      "mean": 642.3489990234375,
+      "median": 642.0,
+      "min": 380.0,
+      "max": 940.0
+    },
+    "stem_extra_dist_all": {
+      "mean": 0.6286051273345947,
+      "median": 0.6218664646148682,
+      "min": 0.049821171909570694,
+      "max": 1.4329783916473389
+    },
+    "stem_extra_dist_true": {
+      "mean": 0.6293114423751831,
+      "median": 0.6224439740180969,
+      "min": 0.05210770294070244,
+      "max": 1.4329783916473389
+    },
+    "stem_extra_dist_false": {
+      "mean": 0.6279871463775635,
+      "median": 0.6213155388832092,
+      "min": 0.049821171909570694,
+      "max": 1.4220621585845947
+    },
+    "stem_degree_mean": {
+      "mean": 357.0387268066406,
+      "median": 357.0,
+      "min": 310.0,
+      "max": 419.5
+    },
+    "nonstem_degree_mean": {
+      "mean": 2.021374464035034,
+      "median": 2.0190577507019043,
+      "min": 1.9739776849746704,
+      "max": 2.1115760803222656
+    }
+  },
+  "per_type_hit_rates": {
+    "leaf -- stem": {
+      "count": 678497,
+      "base_hit_rate": 0.03615786068324547,
+      "stem_hit_rate": 0.9415914882453423
+    },
+    "fruit -- peduncle": {
+      "count": 30349,
+      "base_hit_rate": 0.7562028402912782,
+      "stem_hit_rate": 0.7562028402912782
+    },
+    "peduncle -- stem": {
+      "count": 30349,
+      "base_hit_rate": 0.07314903291706482,
+      "stem_hit_rate": 0.9962436983096642
+    }
+  }
+}

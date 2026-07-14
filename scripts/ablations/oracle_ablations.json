@@ -1,0 +1,665 @@
+{
+  "train_script": "scripts/train_oracle.py",
+  "base_args": [
+    "--data_root",
+    "/home/data/menon/data_pepper_scenes/industrial_v2_800_bio_colors/",
+    "--occl_sidecar_dir",
+    "/home/data/menon/data_pepper_scenes/industrial_v2_800_bio_colors/occl_zbuf_sidecars_industrial_v2_800_bio_colors",
+    "--batch_size",
+    "8",
+    "--model_type",
+    "res",
+    "--node_feat_mode",
+    "local",
+    "--drop_shoots",
+    "--no_geom_injection",
+    "--subgraph_enabled",
+    "--subgraph_size",
+    "288",
+    "--occl_aug_enabled",
+    "--occl_aug_num_fruits",
+    "4",
+    "--occl_aug_reserve_nodes",
+    "64",
+    "--occl_enabled",
+    "--occl_supervise_max_fruits_per_scene",
+    "12",
+    "--occl_supervise_remain_rate_min",
+    "0.9",
+    "--occl_supervise_min_dom_dirs",
+    "1",
+    "--occl_potential_dir_sampling",
+    "stratified",
+    "--use_4mm",
+    "--occl_leaf_sa_layers",
+    "2",
+    "--occl_leaf_sa_mode",
+    "per_fruit_dir",
+    "--occl_leaf_sa_dim",
+    "128",
+    "--occl_leaf_sa_heads",
+    "4",
+    "--occl_leaf_sa_ff_mult",
+    "4",
+    "--occl_leaf_sa_dropout",
+    "0.1",
+    "--w_occl_union",
+    "0.2",
+    "--w_occl_potential",
+    "0.2",
+    "--w_occl_rank",
+    "0.2",
+    "--w_occl_consistency",
+    "0.1",
+    "--occl_rank_gamma",
+    "1.75",
+    "--no_rgb",
+    "--no_normals",
+    "--npoint",
+    "128",
+    "--z_rot_aug_mode",
+    "none",
+    "--xyz_jitter",
+    "0",
+    "--point_dropout",
+    "0",
+    "--color_dropout",
+    "0",
+    "--seed",
+    "0"
+  ],
+  "runs": {
+    "A0": {
+      "name": "oracle_ablate_A0_baseline_no_edl",
+      "family": "baseline"
+    },
+    "A1": {
+      "name": "oracle_ablate_A1_baseline_edl",
+      "family": "baseline",
+      "add_flags": ["--edl_node", "--edl_edge_exist", "--edl_edge_label", "--edl_occl_rank"],
+      "set_args": {
+        "--edl_kl_warmup_epochs": "40",
+        "--edl_kl_coeff_edge_exist": "0.05",
+        "--pos_weight_edge_exist": "5"
+      }
+    },
+    "L1": {
+      "name": "oracle_ablate_L1_no_rank_loss",
+      "family": "loss",
+      "set_args": { "--w_occl_rank": "0" }
+    },
+    "L2": {
+      "name": "oracle_ablate_L2_no_potential_loss",
+      "family": "loss",
+      "set_args": { "--w_occl_potential": "0" }
+    },
+    "L3": {
+      "name": "oracle_ablate_L3_no_consistency",
+      "family": "loss",
+      "set_args": { "--w_occl_consistency": "0" }
+    },
+    "L4": {
+      "name": "oracle_ablate_L4_no_union_loss",
+      "family": "loss",
+      "set_args": {
+        "--w_occl_union": "0",
+        "--ckpt_monitor": "val/occl_leaf_ndcg_at_3",
+        "--ckpt_mode": "max"
+      }
+    },
+    "L5": {
+      "name": "oracle_ablate_L5_union_only",
+      "family": "loss",
+      "set_args": {
+        "--w_occl_potential": "0",
+        "--w_occl_rank": "0",
+        "--w_occl_consistency": "0"
+      }
+    },
+    "S0": {
+      "name": "oracle_ablate_S0_no_leaf_sa",
+      "family": "arch",
+      "set_args": { "--occl_leaf_sa_layers": "0" }
+    },
+    "S1": {
+      "name": "oracle_ablate_S1_leaf_sa_1layer",
+      "family": "arch",
+      "set_args": { "--occl_leaf_sa_layers": "1" }
+    },
+    "S2": {
+      "name": "oracle_ablate_S2_leaf_sa_per_fruit",
+      "family": "arch",
+      "set_args": { "--occl_leaf_sa_mode": "per_fruit" }
+    },
+    "H1": {
+      "name": "oracle_ablate_H1_occl_node_feat_gnn_only",
+      "family": "occl_inputs",
+      "set_args": { "--occl_node_feat_source": "gnn_only" }
+    },
+    "H2": {
+      "name": "oracle_ablate_H2_occl_node_feat_identity_only",
+      "family": "occl_inputs",
+      "set_args": { "--occl_node_feat_source": "identity_only" }
+    },
+    "H3": {
+      "name": "oracle_ablate_H3_occl_pair_geom_none",
+      "family": "occl_inputs",
+      "set_args": { "--occl_pair_geom_mode": "none" }
+    },
+    "Q1": {
+      "name": "oracle_ablate_Q1_no_occl_aug",
+      "family": "sampling",
+      "remove_flags": ["--occl_aug_enabled"]
+    },
+    "Q2": {
+      "name": "oracle_ablate_Q2_occl_aug_no_reserve",
+      "family": "sampling",
+      "set_args": { "--occl_aug_reserve_nodes": "0" }
+    },
+    "I1": {
+      "name": "oracle_ablate_I1_npoint_256",
+      "family": "capacity",
+      "set_args": { "--npoint": "256" }
+    },
+    "I2": {
+      "name": "oracle_ablate_I2_nonrotaug_on",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.001", "--point_dropout": "0.1" }
+    },
+    "I3": {
+      "name": "oracle_ablate_I3_jitter0004",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.004"}
+    },
+    "I4": {
+      "name": "oracle_ablate_I4_jitter0004drop01",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.004", "--point_dropout": "0.1"}
+    },
+    "I5": {
+      "name": "oracle_ablate_I5_drop02",
+      "family": "aug",
+      "set_args": { "--point_dropout": "0.2"}
+    },
+    "I6": {
+      "name": "oracle_ablate_I6_jitter0004drop02",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.004",  "--point_dropout": "0.2"}
+    },
+    "I7": {
+      "name": "oracle_ablate_I7_jitter0002drop01",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.002",  "--point_dropout": "0.1"}
+    },
+    "I8": {
+      "name": "oracle_ablate_I8_jitter0002drop02",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.002",  "--point_dropout": "0.2"}
+    },
+    "I9": {
+      "name": "oracle_ablate_I9_jitter0002drop03",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.002",  "--point_dropout": "0.3"}
+    },
+    "I10": {
+      "name": "oracle_ablate_I10_jitter0002drop04",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.002",  "--point_dropout": "0.4"}
+    },
+    "I11": {
+      "name": "oracle_ablate_I11_jitter0002nodrop",
+      "family": "aug",
+      "set_args": { "--xyz_jitter": "0.002",  "--point_dropout": "0.0"}
+    },
+    "I12": {
+      "name": "oracle_ablate_I12_peduncle01_pepperdrop01",
+      "family": "aug",
+      "set_args": { 
+        "--xyz_jitter": "0.0", 
+        "--point_dropout": "0.0", 
+        "--pd_peduncle": "0.1",
+        "--pd_fruit": "0.1" 
+      }
+    },
+    "I13": {
+      "name": "oracle_ablate_I13_alldrop01",
+      "family": "aug",
+      "set_args": { 
+        "--xyz_jitter": "0.0", 
+        "--point_dropout": "0.0", 
+        "--pd_peduncle": "0.1",
+        "--pd_fruit": "0.1",
+        "--pd_stem": "0.1",
+        "--pd_leaf": "0.1"
+      }
+    },
+    "I14": {
+      "name": "oracle_ablate_I14_alldrop02",
+      "family": "aug",
+      "set_args": { 
+        "--xyz_jitter": "0.0", 
+        "--point_dropout": "0.0", 
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "I15": {
+      "name": "oracle_ablate_I15_alldrop04",
+      "family": "aug",
+      "set_args": { 
+        "--xyz_jitter": "0.0", 
+        "--point_dropout": "0.0", 
+        "--pd_peduncle": "0.4",
+        "--pd_fruit": "0.4",
+        "--pd_stem": "0.4",
+        "--pd_leaf": "0.4"
+      }
+    },
+    "I16": {
+      "name": "oracle_ablate_I16_jitter0002_alldrop02",
+      "family": "aug",
+      "set_args": { 
+        "--xyz_jitter": "0.002", 
+        "--point_dropout": "0.0", 
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "F1": {
+      "name": "oracle_ablate_F1_normals_on",
+      "family": "features",
+      "remove_flags": ["--no_normals"]
+    },
+    "G1": {
+      "name": "oracle_ablate_G1_gamma_1",
+      "family": "objective",
+      "set_args": { "--occl_rank_gamma": "1.0" }
+    },
+    "G2": {
+      "name": "oracle_ablate_G2_potential_dom_only",
+      "family": "objective",
+      "set_args": { "--occl_potential_dir_sampling": "dominant_only" }
+    },
+    "U1": {
+      "name": "oracle_ablate_U1_leafset_sidecar_priority",
+      "family": "upper_bound",
+      "set_args": { "--occl_leafset_policy": "sidecar_priority" }
+    },
+    "M0": {
+      "name": "oracle_ablate_M0_minimal_combo",
+      "family": "minimal",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0"
+      }
+    },
+    "M1": {
+      "name": "oracle_ablate_M1_minimal_combo_sa1",
+      "family": "minimal",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--occl_leaf_sa_layers": "1",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0"
+      }
+    },
+    "M2": {
+      "name": "oracle_ablate_M2_minimal_combo_no_rank",
+      "family": "minimal",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--w_occl_rank": "0"
+      }
+    },
+    "M3": {
+      "name": "oracle_ablate_M3_minimal_combo_no_potential",
+      "family": "minimal",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--w_occl_potential": "0"
+      }
+    },
+    "M4": {
+      "name": "oracle_ablate_M4_minimal_combo_edl",
+      "family": "minimal",
+      "add_flags": ["--edl_node", "--edl_edge_exist", "--edl_edge_label", "--edl_occl_rank"],
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--edl_kl_warmup_epochs": "40",
+        "--edl_kl_coeff_edge_exist": "0.05",
+        "--pos_weight_edge_exist": "5"
+      }
+    },
+    "M0I11": {
+      "name": "M0I11_aug_jitter002_nodrop",
+      "family": "aug",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0"
+      }
+    },
+    "M0I3": {
+      "name": "M0I3_aug_jitter004_nodrop",
+      "family": "aug",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--xyz_jitter": "0.004",
+        "--point_dropout": "0.0"
+      }
+    },
+    "M0I15": {
+      "name": "M0I15_aug_alldrop04",
+      "family": "aug",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--xyz_jitter": "0.0",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.4",
+        "--pd_fruit": "0.4",
+        "--pd_stem": "0.4",
+        "--pd_leaf": "0.4"
+      }
+    },
+    "M0I16": {
+      "name": "M0I16_aug_jitter002_alldrop02",
+      "family": "aug",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "M0I14": {
+      "name": "M0I14_aug_alldrop02",
+      "family": "aug",
+      "set_args": {
+        "--occl_node_feat_source": "identity_only",
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--w_occl_consistency": "0",
+        "--occl_rank_gamma": "1.0",
+        "--xyz_jitter": "0.0",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "S2I11": {
+      "name": "S2I11_aug_jitter002_nodrop",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0"
+      }
+    },
+    "S2I15": {
+      "name": "S2I15_aug_alldrop04",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.0",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.4",
+        "--pd_fruit": "0.4",
+        "--pd_stem": "0.4",
+        "--pd_leaf": "0.4"
+      }
+    },
+    "S2I16": {
+      "name": "S2I16_aug_jitter002_alldrop02",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "S2I14": {
+      "name": "S2I14_aug_alldrop02",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.0",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2"
+      }
+    },
+    "S2I3": {
+      "name": "S2I3_aug_jitter004_nodrop",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.004",
+        "--point_dropout": "0.0"
+      }
+    },
+    "S2H1": {
+      "name": "S2H1_ablate_occl_gnn_only",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--occl_node_feat_source": "gnn_only"
+      }
+    },
+    "S2H2": {
+      "name": "S2H2_ablate_occl_identity_only",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--occl_node_feat_source": "identity_only"
+      }
+    },
+    "S2H3": {
+      "name": "S2H3_ablate_occl_pair_geom_none",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--occl_pair_geom_mode": "none"
+      }
+    },
+    "S2S0": {
+      "name": "S2S0_ablate_no_leaf_sa",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--occl_leaf_sa_layers": "0"
+      }
+    },
+    "S2S1": {
+      "name": "S2S1_ablate_sa_1layer",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--occl_leaf_sa_layers": "1"
+      }
+    },
+    "S2L1": {
+      "name": "S2L1_ablate_L1_no_rank_loss",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--w_occl_rank": "0"
+      }
+    },
+    "S2L2": {
+      "name": "S2L2_ablate_L2_no_potential_loss",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--w_occl_potential": "0"
+      }
+    },
+    "S2L3": {
+      "name": "S2L3_ablate_L3_no_consistency_loss",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--w_occl_consistency": "0"
+      }
+    },
+    "S2L4": {
+      "name": "S2L4_ablate_L4_no_union_loss",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--w_occl_union": "0",
+        "--ckpt_monitor": "val/occl_leaf_ndcg_at_3",
+        "--ckpt_mode": "max"
+      }
+    },
+    "S2L5": {
+      "name": "S2L5_ablate_L5_union_only_loss",
+      "family": "abl",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.002",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.2",
+        "--pd_fruit": "0.2",
+        "--pd_stem": "0.2",
+        "--pd_leaf": "0.2",
+        "--w_occl_potential": "0",
+        "--w_occl_rank": "0",
+        "--w_occl_consistency": "0"
+      }
+    },
+    "S2H1I16": {
+      "name": "S2H1I16_ablate_aug_occl_gnn_only_jitter004_nodrop",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.004",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.0",
+        "--pd_fruit": "0.0",
+        "--pd_stem": "0.0",
+        "--pd_leaf": "0.0",
+        "--occl_node_feat_source": "gnn_only"
+      }
+    },
+    "S2H2I16": {
+      "name": "S2H2I16_ablate_aug_occl_identity_only_jitter004_nodrop",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.004",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.0",
+        "--pd_fruit": "0.0",
+        "--pd_stem": "0.0",
+        "--pd_leaf": "0.0",
+        "--occl_node_feat_source": "identity_only"
+      }
+    },
+    "S2L3I16": {
+      "name": "S2L3I16_ablate_aug_L3_no_consistency_loss_jitter004_nodrop",
+      "family": "aug",
+      "set_args": { 
+        "--occl_leaf_sa_mode": "per_fruit",
+        "--xyz_jitter": "0.004",
+        "--point_dropout": "0.0",
+        "--pd_peduncle": "0.0",
+        "--pd_fruit": "0.0",
+        "--pd_stem": "0.0",
+        "--pd_leaf": "0.0",
+        "--w_occl_consistency": "0"
+      }
+    }
+  }
+}
