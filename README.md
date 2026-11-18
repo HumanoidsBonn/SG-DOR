@@ -25,6 +25,11 @@ It provides a graph-only configuration for graph machine learning and full
 scene archives containing 4 mm point clouds, scene graphs, and directional
 occlusion targets.
 
+## Model Weights
+
+The MIT-licensed SG-DOR model and PointNet++ encoder weights are hosted on
+Hugging Face: [rohitmenon86/sg-dor](https://huggingface.co/rohitmenon86/sg-dor).
+
 ## Getting Started
 
 1. Set up the Conda environment as shown above.
