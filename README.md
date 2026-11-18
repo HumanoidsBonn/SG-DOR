@@ -20,10 +20,10 @@ conda activate bproc
 ## Dataset
 
 The MIT-licensed SG-DOR training dataset is hosted on Hugging Face:
-[rohit-hrl/sg-dor-dataset](https://huggingface.co/datasets/rohit-hrl/sg-dor-dataset).
+[rohitmenon86/sg-dor-dataset](https://huggingface.co/datasets/rohitmenon86/sg-dor-dataset).
 It provides a graph-only configuration for graph machine learning and full
 scene archives containing 4 mm point clouds, scene graphs, and directional
-occlusion targets. The dataset repository is currently access-controlled.
+occlusion targets.
 
 ## Getting Started
 
